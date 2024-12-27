@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Al-Quran App
 
-## Getting Started
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-First, run the development server:
+## Description
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Al-Quran App is a modern web application built with Next.js that provides a digital platform for reading and studying the Holy Quran. The application offers multiple translations, audio recitations, and an intuitive user interface for a seamless reading experience.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Framework:** Next.js 13 (App Router)
+- **Language:** TypeScript (98.6%)
+- **Styling:** Tailwind CSS (1.3%)
+- **State Management:** React Context
+- **UI Components:** shadcn/ui
+- **Icons:** Lucide React
+- **Deployment:** Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- 📖 Complete Quran text with accurate Unicode Arabic support
+- 🌍 Multiple language translations
+- 🔊 Audio recitations with player controls
+- 📑 Bookmark system for verses
+- 🎨 Beautiful UI with dark/light mode
+- 📱 Responsive design for all devices
+- 🔍 Advanced search functionality
+- 📚 Tafsir (exegesis) integration
+- ⬇️ Download surah in multiple formats
+- 🎯 Quick navigation and verse jumper
+- 📊 Reading progress tracker
+- 🌟 Daily verse feature
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
