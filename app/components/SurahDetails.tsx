@@ -22,6 +22,11 @@ interface SurahInfo {
   revelationType: string
 }
 
+interface Translation {
+  code: string
+  name: string
+}
+
 export default function SurahDetails({ surahId }: { surahId: string }) {
   const [surahInfo, setSurahInfo] = useState<SurahInfo | null>(null)
   const [ayahs, setAyahs] = useState<Ayah[]>([])
@@ -29,14 +34,36 @@ export default function SurahDetails({ surahId }: { surahId: string }) {
   const [selectedTranslation, setSelectedTranslation] = useState('en.asad')
   const [showTafsir, setShowTafsir] = useState(false)
   const [selectedAyah, setSelectedAyah] = useState<number | null>(null)
+  const [translations, setTranslations] = useState<Translation[]>([])
+
+  useEffect(() => {
+    const fetchTranslations = async () => {
+      try {
+        const response = await fetch('http://api.alquran.cloud/v1/edition')
+        const data = await response.json()
+        if (data && data.data) {
+          setTranslations(data.data.map((t: { id: string, name: string }) => ({
+            code: t.id,
+            name: t.name
+          })))
+        }
+      } catch (error) {
+        console.error('Error fetching translations:', error)
+      }
+    }
+
+    fetchTranslations()
+  }, [])
 
   useEffect(() => {
     const fetchSurahDetails = async () => {
       setLoading(true)
       try {
+        // Construct dynamic translation query based on available translations
+        const translationCodes = translations.map((t) => t.code).join(',')
         const [surahInfoRes, ayahsRes] = await Promise.all([
           fetch(`https://api.alquran.cloud/v1/surah/${surahId}`),
-          fetch(`https://api.alquran.cloud/v1/surah/${surahId}/editions/quran-uthmani,en.asad,en.pickthall,fr.hamidullah,de.aburida`)
+          fetch(`https://api.alquran.cloud/v1/surah/${surahId}/editions/quran-uthmani,${translationCodes}`)
         ])
         const surahInfoData = await surahInfoRes.json()
         const ayahsData = await ayahsRes.json()
@@ -45,12 +72,10 @@ export default function SurahDetails({ surahId }: { surahId: string }) {
         setAyahs(ayahsData.data[0].ayahs.map((ayah: any, index: number) => ({
           number: ayah.numberInSurah,
           text: ayah.text,
-          translations: {
-            'en.asad': ayahsData.data[1].ayahs[index].text,
-            'en.pickthall': ayahsData.data[2].ayahs[index].text,
-            'fr.hamidullah': ayahsData.data[3].ayahs[index].text,
-            'de.aburida': ayahsData.data[4].ayahs[index].text,
-          },
+          translations: translations.reduce((acc, t, i) => {
+            acc[t.code] = ayahsData.data[i + 1].ayahs[index].text
+            return acc
+          }, {} as { [key: string]: string }),
           audio: `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${ayah.number}.mp3`
         })))
       } catch (error) {
@@ -59,8 +84,10 @@ export default function SurahDetails({ surahId }: { surahId: string }) {
       setLoading(false)
     }
 
-    fetchSurahDetails()
-  }, [surahId])
+    if (translations.length > 0) {
+      fetchSurahDetails()
+    }
+  }, [surahId, translations])
 
   if (loading) {
     return (
@@ -81,7 +108,11 @@ export default function SurahDetails({ surahId }: { surahId: string }) {
       <div className="mb-4 text-center text-gray-600 dark:text-gray-300">
         <span>{surahInfo.numberOfAyahs} Ayahs</span> | <span>{surahInfo.revelationType}</span>
       </div>
-      <TranslationSelector value={selectedTranslation} onChange={setSelectedTranslation} />
+      <TranslationSelector
+        value={selectedTranslation}
+        onChange={setSelectedTranslation}
+        translations={translations} // Pass available translations as props
+      />
       <div className="space-y-8 mt-8">
         {ayahs.map((ayah) => (
           <div key={ayah.number} className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6">
@@ -116,4 +147,3 @@ export default function SurahDetails({ surahId }: { surahId: string }) {
     </div>
   )
 }
-
