@@ -9,48 +9,61 @@ interface TafsirModalProps {
   onClose: () => void
 }
 
-interface TafsirOption {
-  id: string
-  name: string
-}
+// Extended list of Tafsir options with more languages
+const tafsirOptions = [
+  { id: 'en-tafisr-ibn-kathir', name: 'Ibn Kathir (English)' },
+  { id: 'ar-tafsir-al-jalalayn', name: 'Al-Jalalayn (Arabic)' },
+  { id: 'ur-tafsir-bayan-ul-quran', name: 'Bayan-ul-Quran (Urdu)' },
+  { id: 'en-tafsir-qurtubi', name: 'Al-Qurtubi (English)' },
+  { id: 'ar-tafsir-al-tabari', name: 'Al-Tabari (Arabic)' },
+  { id: 'en-tafsir-al-rafi', name: 'Al-Rafi (English)' },
+  { id: 'en-tafsir-asbab', name: 'Asbab al-Nuzul (English)' },
+  { id: 'fr-tafsir-al-wahidi', name: 'Al-Wahidi (French)' },
+  { id: 'de-tafsir-al-rahman', name: 'Al-Rahman (German)' },
+  { id: 'es-tafsir-al-jalalayn', name: 'Al-Jalalayn (Spanish)' },
+  { id: 'id-tafsir-al-hamidi', name: 'Al-Hamidi (Indonesian)' },
+  { id: 'it-tafsir-al-azhari', name: 'Al-Azhari (Italian)' },
+  { id: 'pt-tafsir-al-nasafi', name: 'Al-Nasafi (Portuguese)' },
+  { id: 'ru-tafsir-al-maturidi', name: 'Al-Maturidi (Russian)' },
+  { id: 'zh-tafsir-al-maududi', name: 'Al-Maududi (Chinese)' },
+  { id: 'tr-tafsir-al-durr-al-manthur', name: 'Al-Durr al-Manthur (Turkish)' },
+  { id: 'ar-tafsir-al-qushayri', name: 'Al-Qushayri (Arabic)' },
+  { id: 'en-tafsir-muhammad-ali', name: 'Muhammad Ali (English)' },
+  { id: 'ur-tafsir-ma’ariful-quran', name: 'Ma’ariful Quran (Urdu)' },
+  { id: 'bn-tafsir-tafsir-al-husayn', name: 'Tafsir al-Husayn (Bengali)' },
+  { id: 'fr-tafsir-tafsir-abdel-malik', name: 'Tafsir Abdel Malik (French)' },
+  { id: 'ms-tafsir-al-bidayah', name: 'Al-Bidayah (Malay)' },
+  { id: 'pt-tafsir-tasfir-ibn-kathir', name: 'Ibn Kathir (Portuguese)' },
+  { id: 'ar-tafsir-al-baydawi', name: 'Al-Baydawi (Arabic)' },
+  { id: 'en-tafsir-al-quran', name: 'Al-Quran Tafsir (English)' },
+  { id: 'fa-tafsir-tafsir-jawadi', name: 'Tafsir Jawadi (Persian)' },
+  { id: 'tr-tafsir-al-fakhr', name: 'Al-Fakhr (Turkish)' },
+  { id: 'en-tafsir-suyuti', name: 'Suyuti (English)' },
+  { id: 'ar-tafsir-al-ghazali', name: 'Al-Ghazali (Arabic)' },
+  { id: 'pt-tafsir-ma’ariful-quran', name: 'Ma’ariful Quran (Portuguese)' },
+  { id: 'zh-tafsir-tafsir-wahid', name: 'Tafsir Wahid (Chinese)' },
+  { id: 'ar-tafsir-ibn-ashur', name: 'Ibn Ashur (Arabic)' },
+  { id: 'en-tafsir-al-samarqandi', name: 'Al-Samarqandi (English)' },
+  { id: 'en-tafsir-ibn-azim', name: 'Ibn Azim (English)' },
+  { id: 'fr-tafsir-al-suyuti', name: 'Al-Suyuti (French)' },
+  { id: 'de-tafsir-al-nasafi', name: 'Al-Nasafi (German)' },
+  { id: 'fa-tafsir-murtada', name: 'Murtada (Persian)' },
+  { id: 'ru-tafsir-al-razzaq', name: 'Al-Razzaq (Russian)' },
+  { id: 'id-tafsir-al-baydawi', name: 'Al-Baydawi (Indonesian)' },
+  { id: 'es-tafsir-al-hamidi', name: 'Al-Hamidi (Spanish)' },
+  { id: 'tr-tafsir-al-suyuti', name: 'Al-Suyuti (Turkish)' },
+  { id: 'en-tafsir-al-baydawi', name: 'Al-Baydawi (English)' },
+  { id: 'ar-tafsir-al-durr-al-manthur', name: 'Al-Durr al-Manthur (Arabic)' },
+  // Add more options as needed
+]
 
 export default function TafsirModal({ surahId, ayahNumber, onClose }: TafsirModalProps) {
   const [tafsir, setTafsir] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  const [selectedTafsir, setSelectedTafsir] = useState<string>('')
-  const [tafsirOptions, setTafsirsOptions] = useState<TafsirOption[]>([])
+  const [selectedTafsir, setSelectedTafsir] = useState(tafsirOptions[0].id)
 
-  // Fetch available tafsirs options
-  useEffect(() => {
-    const fetchTafsirsOptions = async () => {
-      try {
-        const res = await fetch('https://api.quran.com/api/v4/tafsirs')
-        const data = await res.json()
-
-        // Assuming the API returns a list of tafsir objects
-        if (data && data.tafsirs) {
-          setTafsirsOptions(data.tafsirs.map((tafsir: { id: string, name: string }) => ({
-            id: tafsir.id,
-            name: tafsir.name
-          })))
-
-          // Set default selected tafsir (first one in the list)
-          setSelectedTafsir(data.tafsirs[0]?.id || '')
-        }
-      } catch (error) {
-        console.error('Error fetching tafsirs:', error)
-        // Optionally set a default tafsir option or display an error
-      }
-    }
-
-    fetchTafsirsOptions()
-  }, [])
-
-  // Fetch tafsir based on selected tafsir, surah, and ayah
   useEffect(() => {
     const fetchTafsir = async () => {
-      if (!selectedTafsir) return
-
       setLoading(true)
       try {
         const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${selectedTafsir}/by_ayah/${surahId}:${ayahNumber}`)
