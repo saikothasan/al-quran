@@ -13,33 +13,34 @@ export default function BookmarkButton({ surahId, ayahNumber }: BookmarkButtonPr
 
   useEffect(() => {
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]')
-    setIsBookmarked(bookmarks.some((b: any) => b.surahId === surahId && b.ayahNumber === ayahNumber))
+    setIsBookmarked(bookmarks.some((b: string) => b === `${surahId}:${ayahNumber}`))
   }, [surahId, ayahNumber])
 
   const toggleBookmark = () => {
     const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]')
-    const bookmarkIndex = bookmarks.findIndex((b: any) => b.surahId === surahId && b.ayahNumber === ayahNumber)
-
-    if (bookmarkIndex === -1) {
-      bookmarks.push({ surahId, ayahNumber })
+    const bookmarkKey = `${surahId}:${ayahNumber}`
+    
+    if (isBookmarked) {
+      const updatedBookmarks = bookmarks.filter((b: string) => b !== bookmarkKey)
+      localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks))
     } else {
-      bookmarks.splice(bookmarkIndex, 1)
+      bookmarks.push(bookmarkKey)
+      localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
     }
-
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
+    
     setIsBookmarked(!isBookmarked)
   }
 
   return (
     <button
       onClick={toggleBookmark}
-      className={`p-2 rounded-full transition-colors duration-300 ${
+      className={`p-3 rounded-full transition-colors duration-300 ${
         isBookmarked
-          ? 'text-yellow-500 hover:text-yellow-600'
-          : 'text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300'
+          ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+          : 'bg-gray-200 text-gray-600 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'
       }`}
     >
-      <Bookmark size={20} fill={isBookmarked ? 'currentColor' : 'none'} />
+      <Bookmark size={24} fill={isBookmarked ? 'currentColor' : 'none'} />
     </button>
   )
 }

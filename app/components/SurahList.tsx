@@ -20,8 +20,8 @@ export default function SurahList() {
   useEffect(() => {
     const fetchSurahs = async () => {
       try {
-        const res = await fetch('https://api.alquran.cloud/v1/surah')
-        const data = await res.json()
+        const response = await fetch('https://api.alquran.cloud/v1/surah')
+        const data = await response.json()
         setSurahs(data.data)
       } catch (error) {
         console.error('Error fetching surahs:', error)
@@ -41,16 +41,16 @@ export default function SurahList() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
       {surahs.map((surah) => (
         <Link href={`/surah/${surah.number}`} key={surah.number}>
-          <div className="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">{surah.number}</span>
-              <span className="text-xl font-arabic text-right text-emerald-800 dark:text-emerald-200">{surah.name}</span>
+              <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{surah.number}</span>
+              <span className="text-lg font-semibold text-gray-600 dark:text-gray-300">{surah.englishName}</span>
             </div>
-            <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">{surah.englishName}</h2>
-            <p className="text-gray-600 dark:text-gray-300 mb-2">{surah.englishNameTranslation}</p>
+            <h3 className="text-2xl font-bold mb-2 text-right font-amiri">{surah.name}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{surah.englishNameTranslation}</p>
             <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
               <span>{surah.numberOfAyahs} Ayahs</span>
               <span>{surah.revelationType}</span>

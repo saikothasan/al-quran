@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { X, Loader2, AlertTriangle } from 'lucide-react'
 
 interface TafsirModalProps {
   surahId: string
@@ -9,90 +9,73 @@ interface TafsirModalProps {
   onClose: () => void
 }
 
-// Extended list of Tafsir options with more languages
 const tafsirOptions = [
   { id: 'en-tafisr-ibn-kathir', name: 'Ibn Kathir (English)' },
   { id: 'ar-tafsir-al-jalalayn', name: 'Al-Jalalayn (Arabic)' },
   { id: 'ur-tafsir-bayan-ul-quran', name: 'Bayan-ul-Quran (Urdu)' },
-  { id: 'en-tafsir-qurtubi', name: 'Al-Qurtubi (English)' },
-  { id: 'ar-tafsir-al-tabari', name: 'Al-Tabari (Arabic)' },
-  { id: 'en-tafsir-al-rafi', name: 'Al-Rafi (English)' },
-  { id: 'en-tafsir-asbab', name: 'Asbab al-Nuzul (English)' },
-  { id: 'fr-tafsir-al-wahidi', name: 'Al-Wahidi (French)' },
-  { id: 'de-tafsir-al-rahman', name: 'Al-Rahman (German)' },
-  { id: 'es-tafsir-al-jalalayn', name: 'Al-Jalalayn (Spanish)' },
-  { id: 'id-tafsir-al-hamidi', name: 'Al-Hamidi (Indonesian)' },
-  { id: 'it-tafsir-al-azhari', name: 'Al-Azhari (Italian)' },
-  { id: 'pt-tafsir-al-nasafi', name: 'Al-Nasafi (Portuguese)' },
-  { id: 'ru-tafsir-al-maturidi', name: 'Al-Maturidi (Russian)' },
-  { id: 'zh-tafsir-al-maududi', name: 'Al-Maududi (Chinese)' },
-  { id: 'tr-tafsir-al-durr-al-manthur', name: 'Al-Durr al-Manthur (Turkish)' },
-  { id: 'ar-tafsir-al-qushayri', name: 'Al-Qushayri (Arabic)' },
-  { id: 'en-tafsir-muhammad-ali', name: 'Muhammad Ali (English)' },
-  { id: 'ur-tafsir-ma’ariful-quran', name: 'Ma’ariful Quran (Urdu)' },
-  { id: 'bn-tafsir-tafsir-al-husayn', name: 'Tafsir al-Husayn (Bengali)' },
-  { id: 'fr-tafsir-tafsir-abdel-malik', name: 'Tafsir Abdel Malik (French)' },
-  { id: 'ms-tafsir-al-bidayah', name: 'Al-Bidayah (Malay)' },
-  { id: 'pt-tafsir-tasfir-ibn-kathir', name: 'Ibn Kathir (Portuguese)' },
-  { id: 'ar-tafsir-al-baydawi', name: 'Al-Baydawi (Arabic)' },
-  { id: 'en-tafsir-al-quran', name: 'Al-Quran Tafsir (English)' },
-  { id: 'fa-tafsir-tafsir-jawadi', name: 'Tafsir Jawadi (Persian)' },
-  { id: 'tr-tafsir-al-fakhr', name: 'Al-Fakhr (Turkish)' },
-  { id: 'en-tafsir-suyuti', name: 'Suyuti (English)' },
-  { id: 'ar-tafsir-al-ghazali', name: 'Al-Ghazali (Arabic)' },
-  { id: 'pt-tafsir-ma’ariful-quran', name: 'Ma’ariful Quran (Portuguese)' },
-  { id: 'zh-tafsir-tafsir-wahid', name: 'Tafsir Wahid (Chinese)' },
-  { id: 'ar-tafsir-ibn-ashur', name: 'Ibn Ashur (Arabic)' },
-  { id: 'en-tafsir-al-samarqandi', name: 'Al-Samarqandi (English)' },
-  { id: 'en-tafsir-ibn-azim', name: 'Ibn Azim (English)' },
-  { id: 'fr-tafsir-al-suyuti', name: 'Al-Suyuti (French)' },
-  { id: 'de-tafsir-al-nasafi', name: 'Al-Nasafi (German)' },
-  { id: 'fa-tafsir-murtada', name: 'Murtada (Persian)' },
-  { id: 'ru-tafsir-al-razzaq', name: 'Al-Razzaq (Russian)' },
-  { id: 'id-tafsir-al-baydawi', name: 'Al-Baydawi (Indonesian)' },
-  { id: 'es-tafsir-al-hamidi', name: 'Al-Hamidi (Spanish)' },
-  { id: 'tr-tafsir-al-suyuti', name: 'Al-Suyuti (Turkish)' },
-  { id: 'en-tafsir-al-baydawi', name: 'Al-Baydawi (English)' },
-  { id: 'ar-tafsir-al-durr-al-manthur', name: 'Al-Durr al-Manthur (Arabic)' },
-  // Add more options as needed
+  { id: 'fr-tafsir-al-quran', name: 'Tafsir Al-Quran (French)' },
+  { id: 'de-tafsir-al-quran', name: 'Tafsir Al-Quran (German)' },
+  { id: 'es-tafsir-quran', name: 'Tafsir del Corán (Spanish)' },
+  { id: 'ru-tafsir-quran', name: 'Тафсир Корана (Russian)' },
+  { id: 'tr-tafsir-quran', name: 'Kuran Tefsiri (Turkish)' },
+  { id: 'id-tafsir-jalalayn', name: 'Tafsir Jalalayn (Indonesian)' },
+  { id: 'bn-tafsir-ahsanul-bayan', name: 'তাফসীর আহসানুল বায়ান (Bengali)' },
 ]
 
 export default function TafsirModal({ surahId, ayahNumber, onClose }: TafsirModalProps) {
   const [tafsir, setTafsir] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedTafsir, setSelectedTafsir] = useState(tafsirOptions[0].id)
 
   useEffect(() => {
     const fetchTafsir = async () => {
       setLoading(true)
+      setError(null)
       try {
         const res = await fetch(`https://api.quran.com/api/v4/tafsirs/${selectedTafsir}/by_ayah/${surahId}:${ayahNumber}`)
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`)
+        }
         const data = await res.json()
-        setTafsir(data.tafsir.text)
+        if (data.tafsir && data.tafsir.text) {
+          setTafsir(data.tafsir.text)
+        } else {
+          throw new Error('Tafsir text not found in the response')
+        }
       } catch (error) {
         console.error('Error fetching tafsir:', error)
-        setTafsir('Failed to load tafsir.')
+        setError('Failed to load tafsir. Please try again later.')
+        setTafsir(null)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     fetchTafsir()
   }, [surahId, ayahNumber, selectedTafsir])
 
+  const handleRetry = () => {
+    setLoading(true)
+    setError(null)
+    // This will trigger the useEffect to run again
+    setSelectedTafsir(selectedTafsir)
+  }
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Tafsir - Surah {surahId}, Ayah {ayahNumber}</h3>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center p-6 border-b dark:border-gray-700">
+          <h3 className="text-2xl font-semibold text-emerald-800 dark:text-emerald-200">Tafsir - Surah {surahId}, Ayah {ayahNumber}</h3>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors duration-200">
             <X size={24} />
           </button>
         </div>
-        <div className="p-4">
+        <div className="p-6">
           <select
             value={selectedTafsir}
             onChange={(e) => setSelectedTafsir(e.target.value)}
-            className="w-full mb-4 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            className="w-full mb-6 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           >
             {tafsirOptions.map((option) => (
               <option key={option.id} value={option.id}>
@@ -101,12 +84,26 @@ export default function TafsirModal({ surahId, ayahNumber, onClose }: TafsirModa
             ))}
           </select>
           {loading ? (
-            <div className="text-center text-gray-600 dark:text-gray-400">Loading tafsir...</div>
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="w-12 h-12 animate-spin text-emerald-600" />
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center h-64 text-red-500">
+              <AlertTriangle size={48} className="mb-4" />
+              <p className="text-center mb-4">{error}</p>
+              <button
+                onClick={handleRetry}
+                className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 transition-colors duration-200"
+              >
+                Retry
+              </button>
+            </div>
           ) : (
-            <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: tafsir || '' }} />
+            <div className="prose dark:prose-invert max-w-none overflow-y-auto max-h-[60vh]" dangerouslySetInnerHTML={{ __html: tafsir || '' }} />
           )}
         </div>
       </div>
     </div>
   )
 }
+

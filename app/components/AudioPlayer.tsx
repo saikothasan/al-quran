@@ -1,39 +1,40 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Play, Pause } from 'lucide-react'
 
 interface AudioPlayerProps {
   src: string
+  isPlaying: boolean
+  onComplete: () => void
 }
 
-export default function AudioPlayer({ src }: AudioPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false)
+export default function AudioPlayer({ src, isPlaying, onComplete }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
 
-  const togglePlayPause = () => {
+  useEffect(() => {
     if (audioRef.current) {
       if (isPlaying) {
-        audioRef.current.pause()
-      } else {
         audioRef.current.play()
+      } else {
+        audioRef.current.pause()
+        audioRef.current.currentTime = 0
       }
-      setIsPlaying(!isPlaying)
     }
-  }
+  }, [isPlaying, src])
 
   return (
     <div>
       <button
-        onClick={togglePlayPause}
-        className="bg-emerald-500 text-white p-2 rounded-full hover:bg-emerald-600 transition-colors duration-300"
+        className="p-3 rounded-full bg-emerald-500 text-white hover:bg-emerald-600 transition-colors duration-300 shadow-lg"
+        onClick={onComplete}
       >
-        {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+        {isPlaying ? <Pause size={24} /> : <Play size={24} />}
       </button>
       <audio
         ref={audioRef}
         src={src}
-        onEnded={() => setIsPlaying(false)}
+        onEnded={onComplete}
       />
     </div>
   )

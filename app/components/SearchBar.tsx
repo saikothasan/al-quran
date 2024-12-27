@@ -2,33 +2,34 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Search } from 'lucide-react'
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
   const router = useRouter()
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query)}`)
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`)
     }
   }
 
   return (
-    <form onSubmit={handleSearch} className="mb-8">
-      <div className="flex">
+    <form onSubmit={handleSubmit} className="mb-8">
+      <div className="relative">
         <input
           type="text"
+          placeholder="Search the Quran..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search the Quran..."
-          className="flex-grow px-4 py-2 rounded-l-lg border-2 border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-300"
+          className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         />
         <button
           type="submit"
-          className="px-6 py-2 bg-emerald-500 text-white rounded-r-lg hover:bg-emerald-600 transition-colors duration-300"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-emerald-500"
         >
-          Search
+          <Search size={20} />
         </button>
       </div>
     </form>
