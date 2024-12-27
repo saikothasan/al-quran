@@ -1,3 +1,6 @@
+// TranslationSelector.tsx
+import React from 'react'
+
 interface TranslationSelectorProps {
   value: string
   onChange: (value: string) => void
@@ -25,3 +28,5 @@ const TranslationSelector = ({ value, onChange, translations }: TranslationSelec
     </div>
   )
 }
+
+export default TranslationSelector
