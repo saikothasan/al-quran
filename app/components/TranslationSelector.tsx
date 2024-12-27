@@ -6,8 +6,21 @@ interface TranslationSelectorProps {
 const translations = [
   { code: 'en.asad', name: 'Muhammad Asad (English)' },
   { code: 'en.pickthall', name: 'Pickthall (English)' },
+  { code: 'en.yusufali', name: 'Yusuf Ali (English)' },
+  { code: 'en.sahih', name: 'Sahih International (English)' },
   { code: 'fr.hamidullah', name: 'Hamidullah (French)' },
   { code: 'de.aburida', name: 'Abu Rida (German)' },
+  { code: 'de.salih', name: 'Salih (German)' },
+  { code: 'es.casanova', name: 'Casanova (Spanish)' },
+  { code: 'it.monte', name: 'Monte (Italian)' },
+  { code: 'tr.diyanet', name: 'Diyanet (Turkish)' },
+  { code: 'ru.shah', name: 'Shah (Russian)' },
+  { code: 'ar.quran', name: 'Quran (Arabic)' },
+  { code: 'pt.muller', name: 'Muller (Portuguese)' },
+  { code: 'hi.khan', name: 'Khan (Hindi)' },
+  { code: 'pl.koransky', name: 'Koransky (Polish)' },
+  { code: 'bn.mohammad', name: 'Mohammad (Bengali)' },
+  { code: 'zh.lu', name: 'Lu (Chinese)' },
 ]
 
 export default function TranslationSelector({ value, onChange }: TranslationSelectorProps) {
@@ -31,4 +44,3 @@ export default function TranslationSelector({ value, onChange }: TranslationSele
     </div>
   )
 }
-
