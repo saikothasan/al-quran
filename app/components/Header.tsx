@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { Moon, Sun } from 'lucide-react'
 import { useState, useEffect } from 'react'
