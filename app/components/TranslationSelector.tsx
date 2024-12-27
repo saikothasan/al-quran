@@ -1,13 +1,16 @@
-// TranslationSelector.tsx
-import React from 'react'
-
 interface TranslationSelectorProps {
   value: string
   onChange: (value: string) => void
-  translations: { code: string, name: string }[]
 }
 
-const TranslationSelector = ({ value, onChange, translations }: TranslationSelectorProps) => {
+const translations = [
+  { code: 'en.asad', name: 'Muhammad Asad (English)' },
+  { code: 'en.pickthall', name: 'Pickthall (English)' },
+  { code: 'fr.hamidullah', name: 'Hamidullah (French)' },
+  { code: 'de.aburida', name: 'Abu Rida (German)' },
+]
+
+export default function TranslationSelector({ value, onChange }: TranslationSelectorProps) {
   return (
     <div className="mb-4">
       <label htmlFor="translation" className="block mb-2 font-semibold text-gray-700 dark:text-gray-300">
@@ -28,5 +31,3 @@ const TranslationSelector = ({ value, onChange, translations }: TranslationSelec
     </div>
   )
 }
-
-export default TranslationSelector
